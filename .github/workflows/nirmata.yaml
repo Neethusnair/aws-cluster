@@ -35,6 +35,7 @@ jobs:
        curl -LO https://nirmata-downloads.s3.us-east-2.amazonaws.com/nctl/nctl_3.2.3/nctl_3.2.3_linux_64-bit.zip
        unzip nctl_3.2.3_linux_64-bit.zip
        echo $PATH
+       nctl 
    #nctl login
     - name: login with token
       run: |-
