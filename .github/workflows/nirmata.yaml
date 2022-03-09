@@ -1,0 +1,45 @@
+name: Register cluster with Nirmata
+
+on:
+  workflow_dispatch
+
+env:
+  EKS_CLUSTER: new
+  EKS_REGION: us-east-2
+
+jobs:
+  Job1:
+    name: Register Cluster
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    ## AWS Credentials
+    - uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.EKS_REGION }}
+
+    # Get the EKS credentials so we can deploy to the cluster
+    - run: |-
+        aws eks --region $EKS_REGION update-kubeconfig --name $EKS_CLUSTER
+        
+   
+   # Install nctl
+    - name: Set up nctl
+      run: |-
+       curl -LO https://nirmata-downloads.s3.us-east-2.amazonaws.com/nctl/nctl_3.2.3/nctl_3.2.3_linux_64-bit.zip
+       unzip nctl_3.2.3_linux_64-bit.zip
+   #nctl login
+    - name: login with token
+      run: |-
+       nctl clusters get --token ${{ secrets.NIRMATA_TOKEN }}
+   
+   #register
+    - name: Register cluster in nirmata
+      run: |-
+       nctl cluster register  arn:aws:eks:us-east-1:384309023036:cluster/new -f root/.kube/config -t default-addons-type -n deploymenttest
+       
