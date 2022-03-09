@@ -6,8 +6,8 @@ on:
     - main
 
 env:
-  EKS_CLUSTER: dev
-  EKS_REGION: us-east-1
+  EKS_CLUSTER: new
+  EKS_REGION: us-east-2
 
 jobs:
   Job1:
