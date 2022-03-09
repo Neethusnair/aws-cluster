@@ -4,7 +4,7 @@ on:
   workflow_dispatch
 
 env:
-  EKS_CLUSTER: new
+  EKS_CLUSTER: dev
   EKS_REGION: us-east-2
 
 jobs:
@@ -26,6 +26,7 @@ jobs:
     # Get the EKS credentials so we can deploy to the cluster
     - run: |-
         aws eks --region $EKS_REGION update-kubeconfig --name $EKS_CLUSTER
+        echo $PATH
         
    
    # Install nctl
@@ -41,5 +42,5 @@ jobs:
    #register
     - name: Register cluster in nirmata
       run: |-
-       nctl cluster register  arn:aws:eks:us-east-1:384309023036:cluster/new -f root/.kube/config -t default-addons-type -n deploymenttest
+       nctl cluster register  arn:aws:eks:us-east-2:860174137652:cluster/dev -f /root/.kube/config -t default-addons-type -n devtest
        
