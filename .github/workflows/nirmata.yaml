@@ -37,7 +37,7 @@ jobs:
    #nctl login
     - name: login with token
       run: |-
-       nctl clusters get --token ${{ secrets.NIRMATA_TOKEN }}
+       nctl clusters get --token "${{ secrets.NIRMATA_TOKEN }}"
    
    #register
     - name: Register cluster in nirmata
