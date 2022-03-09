@@ -48,5 +48,5 @@ jobs:
    #register
     - name: Register cluster in nirmata
       run: |-
-       nctl cluster register  arn:aws:eks:us-east-2:860174137652:cluster/dev -f /home/runner/.kube/config -t default-addons-type -n devtest
+       nctl cluster register  arn:aws:eks:us-east-2:860174137652:cluster/dev -f /home/runner/.kube/config -t default-addons-type -n devtest --token "${{ secrets.NIRMATA_TOKEN }}"
        
