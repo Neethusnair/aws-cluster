@@ -26,7 +26,9 @@ jobs:
     # Get the EKS credentials so we can deploy to the cluster
     - run: |-
         aws eks --region $EKS_REGION update-kubeconfig --name $EKS_CLUSTER
-        echo $PATH
+        kubectl config get-contexts
+        kubectl config get-contexts --no-headers | awk '{ print $2 }'
+        #echo $PATH
         
    
    # Install nctl
