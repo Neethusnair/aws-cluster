@@ -26,8 +26,9 @@ jobs:
     # Get the EKS credentials so we can deploy to the cluster
     - run: |-
         aws eks --region $EKS_REGION update-kubeconfig --name $EKS_CLUSTER
-        kubectl config get-contexts
-        kubectl config get-contexts --no-headers | awk '{ print $2 }'
+        #kubectl config get-contexts
+        Cluster_ARN=$(kubectl config get-contexts --no-headers | awk '{ print $2 }')
+        #kubectl config get-contexts --no-headers | awk '{ print $2 }'
         #echo $PATH
         
    
@@ -39,14 +40,16 @@ jobs:
        chmod 755 nctl
        mv nctl /usr/local/bin/
        #echo $PATH
-       nctl 
+   #    nctl 
    #nctl login
-    - name: login with token
-      run: |-
-       nctl clusters get --token "${{ secrets.NIRMATA_TOKEN }}"
+  #  - name: login with token
+ #     run: |-
+   #    nctl clusters get --token "${{ secrets.NIRMATA_TOKEN }}"
    
    #register
     - name: Register cluster in nirmata
       run: |-
-       nctl cluster register  arn:aws:eks:us-east-2:860174137652:cluster/dev -f /home/runner/.kube/config -t default-addons-type -n devtest --token "${{ secrets.NIRMATA_TOKEN }}"
+       #nctl cluster register  arn:aws:eks:us-east-2:860174137652:cluster/dev -f /home/runner/.kube/config -t default-addons-type -n devtest --token "${{ secrets.NIRMATA_TOKEN }}"
+       nctl cluster register  '${Cluster_ARN}' -f /home/runner/.kube/config -t default-addons-type -n devtest --token "${{ secrets.NIRMATA_TOKEN }}"
        
+
