@@ -27,7 +27,6 @@ jobs:
     - run: |-
         aws eks --region $EKS_REGION update-kubeconfig --name $EKS_CLUSTER
         #kubectl config get-contexts
-        #Cluster_ARN=$(kubectl config get-contexts --no-headers | awk '{ print $2 }')
         #kubectl config get-contexts --no-headers | awk '{ print $2 }'
         #echo $PATH
         
