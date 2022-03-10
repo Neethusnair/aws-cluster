@@ -51,6 +51,6 @@ jobs:
       run: |-
        Cluster_ARN=$(kubectl config get-contexts --no-headers | awk '{ print $2 }')
        #nctl cluster register  arn:aws:eks:us-east-2:860174137652:cluster/dev -f /home/runner/.kube/config -t default-addons-type -n devtest --token "${{ secrets.NIRMATA_TOKEN }}"
-       nctl cluster register  '${Cluster_ARN}' -f /home/runner/.kube/config -t default-addons-type -n devtest --token "${{ secrets.NIRMATA_TOKEN }}"
+       nctl cluster register '${Cluster_ARN}' -f /home/runner/.kube/config -t default-addons-type -n devtest --token "${{ secrets.NIRMATA_TOKEN }}"
        
 
