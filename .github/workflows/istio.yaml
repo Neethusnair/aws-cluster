@@ -1,10 +1,10 @@
 name: Set up Istio
 
-on:
-#  workflow_dispatch
-  push:
-    branches:
-    - main
+# on:
+# #  workflow_dispatch
+#   push:
+#     branches:
+#     - main
 
 env:
   EKS_CLUSTER: dev
@@ -41,4 +41,3 @@ jobs:
        cd ~
        #kubectl label namespace default istio-injection=enabled 
        kubectl label namespace default istio-injection=enabled --overwrite
-       
