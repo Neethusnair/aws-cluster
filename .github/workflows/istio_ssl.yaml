@@ -1,4 +1,4 @@
-name: Set up Istio
+name: Set up SSL
 
 on:
  workflow_dispatch
@@ -12,39 +12,6 @@ env:
 
 jobs:
   Job1:
-    name: Setup Dev Istio
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    ## AWS Credentials
-    - uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.EKS_REGION }}
-
-    # Get the EKS credentials so we can deploy to the cluster
-    - run: |-
-        aws eks --region $EKS_REGION update-kubeconfig --name $EKS_CLUSTER
-        
-   
-   # Set up istio
-    - name: Set up Istio
-      run: |-
-       curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.7.3 sh -
-       cd istio-1.7.3
-       export PATH=$PWD/bin:$PATH
-       istioctl install --set profile=demo
-       cd ~
-       #kubectl label namespace default istio-injection=enabled 
-       kubectl label namespace default istio-injection=enabled --overwrite
-
-
-  Job2:
-    needs: Job1
     name: Setup ssl
     runs-on: ubuntu-latest
 
@@ -63,13 +30,12 @@ jobs:
     - run: |-
         aws eks --region $EKS_REGION update-kubeconfig --name $EKS_CLUSTER
         
-   
    # Set up cert-manager
     - name: Set up cert-manager
       run: |-
        kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.yaml      
-       kubectl get pod -n cert-manager
        kubectl wait --for=condition=ready pod -n cert-manager -l app=webhook
+       kubectl get pod -n cert-manager
 
    # create secret for ssl
     - name: create secret
@@ -85,4 +51,31 @@ jobs:
       run: |
         kubectl apply -f issuer.yaml
         kubectl apply -f certificate.yaml
-        kubectl get certificate -A              
+        kubectl get certificate -A       
+
+
+  Job2:
+    needs: Job1
+    name: Deploy Gateway
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+   # AWS Credentials
+    - uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.EKS_REGION }}
+        
+   # Get the EKS credentials so we can deploy to the cluster
+    - run: |-
+        aws eks --region $EKS_REGION update-kubeconfig --name $EKS_CLUSTER
+
+   # Deploy gateway and virtual services
+    - name: Deploy gateway
+      run: |-
+        kubectl apply -f gateway.yaml
+        kubectl get svc -l=istio=ingressgateway -n istio-system                     
