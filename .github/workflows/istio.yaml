@@ -39,6 +39,12 @@ jobs:
         kubectl version
         aws --version
         cat $HOME/.kube/config
+     
+    - name: Kubectl
+      uses: azure/setup-kubectl@v2.0
+      with:
+          version: 'v1.23.6'
+      id: install
         
         
    
