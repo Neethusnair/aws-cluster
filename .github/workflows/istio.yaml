@@ -37,7 +37,8 @@ jobs:
     - run: |-
         aws eks --region $EKS_REGION update-kubeconfig --name $EKS_CLUSTER
         kubectl version
-        #cat $HOME/.kube/config
+        aws --version
+        cat $HOME/.kube/config
         
         
    
